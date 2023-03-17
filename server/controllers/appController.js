@@ -1,7 +1,7 @@
 import UserModel from '../model/User.model.js'
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
-import ENV from '../config.js'
+//import ENV from '../config.js'
 import otpGenerator from 'otp-generator';
 
 /** middleware for verify user */
@@ -21,7 +21,7 @@ export async function verifyUser(req, res, next){
 }
 
 
-/** POST: http://localhost:8080/api/register 
+/** POST: http://localhost:3001/api/register 
  * @param : {
   "username" : "example123",
   "password" : "admin123",
@@ -75,7 +75,7 @@ export async function register(req,res){
                             // return save result as a response
                             user.save()
                                 .then(result => res.status(201).send({ msg: "User Register Successfully"}))
-                                .catch(error => res.status(500).send({error}))
+                                .catch(error => res.status(501).send({error}))
 
                         }).catch(error => {
                             return res.status(500).send({
@@ -104,7 +104,7 @@ export async function register(req,res){
 export async function login(req,res){
    
     const { username, password } = req.body;
-
+    let JWT_SECRET  ="a8bf097d919d321084749a52be3fe0d621d7f40a9e0e80fb778dc6d56ef6ed2a"
     try {
         
         UserModel.findOne({ username })
@@ -118,7 +118,7 @@ export async function login(req,res){
                         const token = jwt.sign({
                                         userId: user._id,
                                         username : user.username
-                                    }, ENV.JWT_SECRET , { expiresIn : "24h"});
+                                    }, JWT_SECRET , { expiresIn : "24h"});
 
                         return res.status(200).send({
                             msg: "Login Successful...!",
